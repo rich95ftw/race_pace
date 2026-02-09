@@ -1,8 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 from race_pace.services.calculator import CalculatorService
 from race_pace import Time, Pace
+from race_pace.validation.time_validation import TimeInputValidator
+from race_pace.validation.distance_validation import DistanceInputValidator
+from race_pace.validation.pace_validation import PaceInputValidator
+
 
 class RunningCalculatorApp:
     def __init__(self, root: tk.Tk):
@@ -156,3 +161,28 @@ class RunningCalculatorApp:
         self.split_table.pack(fill="both", expand=True)
 
         return frame
+
+    def _validate_inputs(self) -> bool:
+        try:
+            DistanceInputValidator.validate(
+                self.distance_type.get(),
+                self.custom_distance.get()
+            )
+
+            if self.mode.get() == "time_to_pace":
+                TimeInputValidator.validate(
+                    self.hours.get(),
+                    self.minutes.get(),
+                    self.seconds.get()
+                )
+            else:
+                PaceInputValidator.validate(
+                    self.pace_minutes.get(),
+                    self.pace_seconds.get()
+                )
+
+        except ValueError as exc:
+            messagebox.showerror("Invalid input", str(exc))
+            return False
+
+        return True
