@@ -1,4 +1,4 @@
-from running_calculator.domain import Time, Distance, Pace
+from race_pace.domain import Time, Distance, Pace
 
 class CalculatorService:
     def pace_to_time(self, pace: Pace, distance: Distance) -> Time:

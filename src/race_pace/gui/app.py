@@ -3,7 +3,8 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from race_pace.services.calculator import CalculatorService
-from race_pace import Time, Pace
+from race_pace.domain.pace import Pace
+from race_pace.domain.time import Time
 from race_pace.validation.time_validation import TimeInputValidator
 from race_pace.validation.distance_validation import DistanceInputValidator
 from race_pace.validation.pace_validation import PaceInputValidator

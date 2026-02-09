@@ -1,7 +1,8 @@
 from .time import Time
 from .distance import Distance, DistanceUnit
 from .pace import Pace
-from .splits import Split, SplitGenerator
+from .splits import Split
+from .Split_Generator import SplitGenerator
 
 __all__ = [
     "Time",
