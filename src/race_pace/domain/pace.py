@@ -1,4 +1,4 @@
-from running_calculator.domain import Time, Distance
+from race_pace.domain import Time, Distance
 
 class Pace:
     def __init__(self, seconds_per_km: float):

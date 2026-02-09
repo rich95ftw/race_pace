@@ -1,4 +1,4 @@
-from running_calculator.domain import Pace, Split, Time
+from race_pace.domain import Pace, Split, Time
 
 class SplitGenerator:
     def __init__(self, pace: Pace):

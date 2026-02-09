@@ -1,1 +1,1 @@
-from running_calculator.domain import Pace, Time, Distance
+from race_pace.domain import Pace, Time, Distance
