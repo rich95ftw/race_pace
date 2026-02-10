@@ -11,8 +11,8 @@ from race_pace.validation.pace_validation import PaceInputValidator
 
 
 class RunningCalculatorApp:
-    def __init__(self, root: tk.Tk):
-        self.root = root
+    def __init__(self):
+        self.root = tk.Tk()
         self.root.title("Running Calculator")
 
         self.calculator = CalculatorService()
@@ -20,6 +20,22 @@ class RunningCalculatorApp:
         self._create_variables()
         self._create_layout()
     
+    def run(self):
+        """Start the Tkinter main loop."""
+        self.root.mainloop()
+
+    def _update_mode(self):
+        """Update input frames based on selected mode."""
+        # Destroy old input frame if it exists
+        if hasattr(self, "_input_frame") and self._input_frame:
+            self._input_frame.destroy()
+
+        # Recreate the appropriate input frame
+        if self.mode.get() == "time_to_pace":
+            self._input_frame = self._create_time_frame(self.root)
+        else:
+            self._input_frame = self._create_pace_frame(self.root)
+
     def _create_variables(self):
         self.mode = tk.StringVar(value="time_to_pace")
 
@@ -36,6 +52,17 @@ class RunningCalculatorApp:
         
         self.include_half = tk.BooleanVar(value=True)
 
+    def _create_layout(self):
+        self._create_mode_frame(self.root)
+        self._create_distance_frame(self.root)
+        
+        # Create the input frame dynamically via _update_mode
+        self._input_frame = None
+        self._update_mode()
+
+        self._create_action_frame(self.root)
+        self._create_split_frame(self.root)
+    
     def _create_mode_frame(self, parent):
         frame = ttk.LabelFrame(parent, text="Calculation Mode")
         frame.grid(row=0, column=0, sticky="ew", padx=10, pady=5)
