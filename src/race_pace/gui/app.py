@@ -8,6 +8,7 @@ from race_pace.domain.time import Time
 from race_pace.validation.time_validation import TimeInputValidator
 from race_pace.validation.distance_validation import DistanceInputValidator
 from race_pace.validation.pace_validation import PaceInputValidator
+from race_pace.domain.distance import Distance, DistanceUnit
 
 
 class RunningCalculatorApp:
@@ -23,6 +24,19 @@ class RunningCalculatorApp:
     def run(self):
         """Start the Tkinter main loop."""
         self.root.mainloop()
+
+    def _get_distance(self) -> Distance:
+        distance_type = self.distance_type.get()
+        unit = DistanceUnit(self.distance_unit.get())
+
+        if distance_type == "marathon":
+            return Distance(42.195, unit)
+        elif distance_type == "half":
+            return Distance(21.0975, unit)
+        elif distance_type == "10k":
+            return Distance(10.0, unit)
+        else:
+            return Distance(self.custom_distance.get(), unit)
 
     def _update_mode(self):
         """Update input frames based on selected mode."""
@@ -159,20 +173,29 @@ class RunningCalculatorApp:
 
     # Calculation handler
     def _calculate(self):
+        if not self._validate_inputs():
+            return
+
         distance = self._get_distance()
-        
-        if self.mode.get() == "time_to_pace":
-            time = Time.from_hms(
-                self.hours.get(),
-                self.minutes.get(),
-                self.seconds.get()
-            )
-            pace = self.calculator.time_to_pace(time, distance)
-        else:
-            pace = Pace(self.pace_minutes.get() * 60 + self.pace_seconds.get())
-            time = self.calculator.pace_to_time(pace, distance)
+
+        try:
+            if self.mode.get() == "time_to_pace":
+                time = Time.from_hms(
+                    self.hours.get(),
+                    self.minutes.get(),
+                    self.seconds.get()
+                )
+                pace = self.calculator.time_to_pace(time, distance)
+            else:
+                pace = Pace(self.pace_minutes.get() * 60 + self.pace_seconds.get())
+                time = self.calculator.pace_to_time(pace, distance)
+
+        except ValueError as exc:
+            messagebox.showerror("Calculation error", str(exc))
+            return
 
         self._update_splits(pace, distance)
+
 
     # Split Table
     def _create_split_frame(self, parent):
