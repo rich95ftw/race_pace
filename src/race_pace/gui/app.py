@@ -36,16 +36,19 @@ class RunningCalculatorApp:
         self.distance_type = tk.StringVar(value="marathon")
         self.custom_distance = tk.DoubleVar(value=10.0)
         self.distance_unit = tk.StringVar(value="km")
-        
+
+        # Watch distance selector
+        self.distance_type.trace_add("write", self._toggle_custom_distance)
+
         # Time inputs
         self.hours = tk.IntVar(value=3)
         self.minutes = tk.IntVar(value=0)
         self.seconds = tk.IntVar(value=0)
-        
+
         # Pace inputs
         self.pace_minutes = tk.IntVar(value=5)
         self.pace_seconds = tk.IntVar(value=0)
-        
+
         # UI Reference holder
         self.input_container: Optional[ttk.LabelFrame] = None
 
@@ -62,7 +65,14 @@ class RunningCalculatorApp:
         self._create_action_buttons().grid(row=3, column=0, pady=10)
         self._create_splits_display().grid(row=4, column=0, sticky="nsew", padx=10, pady=5)
 
-    # --- UI Component Factories ---
+    def _toggle_custom_distance(self, *_) -> None:
+        """Show/hide custom distance input based on selection."""
+        if self.distance_type.get() == "custom":
+            self.custom_distance_entry.grid(row=0, column=1)
+            self.distance_unit_combo.grid(row=0, column=2, padx=5)
+        else:
+            self.custom_distance_entry.grid_remove()
+            self.distance_unit_combo.grid_remove()
 
     def _create_mode_selector(self) -> ttk.LabelFrame:
         """Creates the radio buttons to toggle between time and pace calculations."""
@@ -84,20 +94,33 @@ class RunningCalculatorApp:
     def _create_distance_selector(self) -> ttk.LabelFrame:
         """Creates the dropdown and entry for race distance."""
         frame = ttk.LabelFrame(self.root, text="Distance")
-        
+
         ttk.Combobox(
-            frame, textvariable=self.distance_type,
+            frame,
+            textvariable=self.distance_type,
             values=["marathon", "half", "10k", "custom"],
-            state="readonly", width=12
+            state="readonly",
+            width=12
         ).grid(row=0, column=0, padx=5)
 
-        ttk.Entry(frame, textvariable=self.custom_distance, width=8).grid(row=0, column=1)
-        
-        ttk.Combobox(
-            frame, textvariable=self.distance_unit,
-            values=["km", "miles"], state="readonly", width=8
-        ).grid(row=0, column=2, padx=5)
-        
+        # Store references for toggling
+        self.custom_distance_entry = ttk.Entry(
+            frame,
+            textvariable=self.custom_distance,
+            width=8
+        )
+
+        self.distance_unit_combo = ttk.Combobox(
+            frame,
+            textvariable=self.distance_unit,
+            values=["km", "miles"],
+            state="readonly",
+            width=8
+        )
+
+        # Initial visibility
+        self._toggle_custom_distance()
+
         return frame
 
     def _refresh_input_mode(self) -> None:
