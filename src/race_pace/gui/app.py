@@ -54,9 +54,12 @@ class RunningCalculatorApp:
 
     def _setup_ui(self) -> None:
         """Create the primary layout structure."""
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(4, weight=1)
+
         self._create_mode_selector().grid(row=0, column=0, sticky="ew", padx=10, pady=5)
         self._create_distance_selector().grid(row=1, column=0, sticky="ew", padx=10, pady=5)
-        
+
         # Placeholder for dynamic input frame
         self.input_container = ttk.LabelFrame(self.root, text="Input Details")
         self.input_container.grid(row=2, column=0, sticky="ew", padx=10, pady=5)
@@ -161,14 +164,20 @@ class RunningCalculatorApp:
 
     def _create_splits_display(self) -> ttk.LabelFrame:
         frame = ttk.LabelFrame(self.root, text="Splits")
-        
+        frame.columnconfigure(0, weight=1)
+        frame.rowconfigure(0, weight=1)
+
         self.split_table = ttk.Treeview(
             frame, columns=("distance", "time"), show="headings", height=8
         )
         self.split_table.heading("distance", text="Distance (km)")
         self.split_table.heading("time", text="Cumulative Time")
-        self.split_table.pack(fill="both", expand=True, padx=5, pady=5)
-        
+        self.split_table.grid(row=0, column=0, sticky="nsew", padx=(5, 0), pady=5)
+
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=self.split_table.yview)
+        scrollbar.grid(row=0, column=1, sticky="ns", pady=5, padx=(0, 5))
+        self.split_table.configure(yscrollcommand=scrollbar.set)
+
         return frame
 
     # --- Logic & Handlers ---
