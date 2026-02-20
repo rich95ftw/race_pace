@@ -146,7 +146,7 @@ class RunningCalculatorApp:
         ttk.Spinbox(parent, from_=0, to=23, textvariable=self.hours, width=5).grid(row=0, column=1)
         
         ttk.Label(parent, text="Mins:").grid(row=0, column=2)
-        ttk.Spinbox(parent, from_=0, to=59, textvariable=self.minutes, width=5).grid(row=0, column=3)
+        ttk.Spinbox(parent, from_=0, to=59, textvariable=self.minutes, width=5, wrap=True).grid(row=0, column=3)
         
         ttk.Label(parent, text="Secs:").grid(row=0, column=4)
         ttk.Spinbox(parent, from_=0, to=59, textvariable=self.seconds, width=5).grid(row=0, column=5)
